@@ -15,7 +15,7 @@ bot = discord.Bot()
 data = Data()
 
 guildIds = [833210288681517126] # test discord server
-# guildIds = None # force global commandsa
+guildIds = None # force global commandsa
 
 @bot.event
 async def on_ready():
