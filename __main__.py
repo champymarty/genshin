@@ -33,7 +33,7 @@ async def update_wish_history(ctx, url = None):
             embed.set_image(url="https://c.tenor.com/-tkf9gymfiMAAAAd/barbara-genshin.gif")
             await ctx.respond(embed=embed)
         else:
-            embed = discord.Embed(title="No new wish could be found", description="New wishes can take up to 1 hours to register in Mihoyo server")
+            embed = discord.Embed(title="No new wish could be found", description="New wishes can take up to 1 hour to register in Mihoyo server")
             embed.set_image(url="https://c.tenor.com/NXczgNVYW4sAAAAd/genshin-impact-eyes.gif")
             await ctx.respond(embed=embed)
     except Exception as e:
@@ -118,7 +118,7 @@ async def help(ctx):
     description.addLine("Run the command /delete_my_data ")
     embed.add_field(name="Delete all your data from the bot", value=description.getString(), inline=False)
     
-    embed.set_footer(text="If you have any questions, feel free ro reach out to my discord: champymarty#0902")
+    embed.set_footer(text="If you have any questions, feel free ro reach out to me on my discord: champymarty#0902")
     await ctx.respond(embed=embed)
 
 async def doesMemberExist(ctx) -> bool:
