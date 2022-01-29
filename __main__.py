@@ -97,6 +97,29 @@ async def delete_my_data(ctx):
         return
     embed = discord.Embed(title="You dont gave any data on the bot", description="Please run the command /update_wish_history url if you want to track again your wish")
     await ctx.respond(embed=embed)
+    
+@bot.slash_command(guild_ids=guildIds, description="Get help")
+async def help(ctx):
+    embed = discord.Embed(title="Help center")
+    description = Message()
+    description.addLine("Run the command /update_wish_history url(optional if you already did the command and the link is still valid)")
+    description.addLine("The get help on how to get the url, visit the help document: https://docs.google.com/document/d/145cPidFRGWqL9Ljv245PXg0P_go4Pz4Qh6b9gwCIXdg/edit?usp=sharing")
+    embed.add_field(name="Update your wish history", value=description.getString(), inline=False)
+    
+    description = Message()
+    description.addLine("Run the command /show_pity ")
+    embed.add_field(name="Get your 5 and 4 star pity for all banner", value=description.getString(), inline=False)
+    
+    description = Message()
+    description.addLine("Run the command /generate_wish_excel ")
+    embed.add_field(name="Generate your complete wish history in all banner sent in DM", value=description.getString(), inline=False)
+    
+    description = Message()
+    description.addLine("Run the command /delete_my_data ")
+    embed.add_field(name="Delete all your data from the bot", value=description.getString(), inline=False)
+    
+    embed.set_footer(text="If you have any questions, feel free ro reach out to my discord: champymarty#0902")
+    await ctx.respond(embed=embed)
 
 async def doesMemberExist(ctx) -> bool:
     filePathMember = os.path.join(os.path.dirname(os.path.realpath(__file__)), "members", "{}.pickle".format(ctx.author.id))
