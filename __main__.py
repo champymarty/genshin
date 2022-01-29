@@ -1,4 +1,3 @@
-from msilib.schema import File
 from pydoc import describe
 import traceback
 from GenshinMember import GenshinMember, Banner
