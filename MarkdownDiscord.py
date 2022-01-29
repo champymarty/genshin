@@ -1,5 +1,4 @@
 from enum import Enum
-from tkinter import UNDERLINE
 
 class Effect(Enum):
     NONE = 0
