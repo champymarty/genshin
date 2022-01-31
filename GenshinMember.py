@@ -1,5 +1,6 @@
 import os
 import pickle
+import traceback
 import genshin
 from dotenv import load_dotenv
 import xlsxwriter
@@ -28,13 +29,15 @@ class GenshinMember:
         load_dotenv()
         change = False
         if url is not None:
-            self.url = url
             change = True
-        try:
-            cookies = {"ltuid": os.getenv("ltuid"), "ltoken": os.getenv("ltoken")}
-            authkey = genshin.extract_authkey(self.url)
 
-            client = genshin.GenshinClient(cookies)
+        cookies = {"ltuid": os.getenv("ltuid"), "ltoken": os.getenv("ltoken")}
+        client = genshin.GenshinClient(cookies)
+        try:
+            if url is None:
+                authkey = genshin.extract_authkey(self.url)
+            else:
+                authkey = genshin.extract_authkey(url)
             client.authkey = authkey
             
             result1 = await self._updateBanner(self.novice_banner, 100, client)
@@ -42,10 +45,14 @@ class GenshinMember:
             result3 = await self._updateBanner(self.character_banner, 301, client)
             result4 = await self._updateBanner(self.weapon_banner, 302, client)
         except Exception as e:
+            print(e)
+            traceback.format_exc()
             raise e
         finally:
             await client.close()
         newWish = result1 or result2 or result3 or result4
+        if change:
+            self.url = url
         if change or newWish:
             self.saveData()
         return newWish

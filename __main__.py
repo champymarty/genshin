@@ -1,5 +1,4 @@
 from pydoc import describe
-import traceback
 from GenshinMember import GenshinMember, Banner
 import discord
 import os
@@ -24,7 +23,13 @@ async def on_ready():
 @bot.slash_command(guild_ids=guildIds, description="Update your wishes. Note: take 1h for your wish to register inside Mihoyo")
 async def update_wish_history(ctx, url = None):
     member: GenshinMember = data.getMember(ctx.author.id)
-    previewsUrl = member.url
+    if member.url is None and url is None:
+        embed = discord.Embed(title="You never provided a url !", description="Run the command /update_wish_history url (make sure you select the url attribut it should look like that: )")
+        filePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "pics", "help_no_url_ever_provided.png")
+        file = discord.File(filePath, filename="help_no_url_ever_provided.png")
+        embed. set_image(url="attachment://help_no_url_ever_provided.png")
+        await ctx.respond(file=file, embed=embed)
+        return
     await ctx.defer()
     try:
         if await member.updateWishList(url):
@@ -36,9 +41,12 @@ async def update_wish_history(ctx, url = None):
             embed.set_image(url="https://c.tenor.com/NXczgNVYW4sAAAAd/genshin-impact-eyes.gif")
             await ctx.respond(embed=embed)
     except Exception as e:
-        member.url = previewsUrl
-        embed = discord.Embed(title="The url store or provided is invalid/as expire", description="Please provide a valid url with the optionnal argument 'url' in this command ( Note: Each url expire after 24h )")
-        embed.set_image(url="https://c.tenor.com/nlrTGFOXhKgAAAAd/genshin-impact-genshin.gif")
+        if url is None:
+            embed = discord.Embed(title="The url store in the server as expire", description="Please provide a valid url with the optionnal argument 'url' in this command ( Note: Each url expire after 24h )")
+            embed.set_image(url="https://c.tenor.com/1wwB5yNC6dgAAAAd/genshin-impact.gif")
+        else:
+            embed = discord.Embed(title="The url you input is invalid", description="Please provide a valid url with the optionnal argument 'url' in this command ( Note: Each url expire after 24h )")
+            embed.set_image(url="https://c.tenor.com/AlfMXCwnJscAAAAd/paimon-genshin-impact.gif")
         await ctx.respond(embed=embed)
     
 @bot.slash_command(guild_ids=guildIds, description="Show your 5 and 4 stars pity for each banner")
