@@ -23,6 +23,7 @@ async def on_ready():
 @bot.slash_command(guild_ids=guildIds, description="Update your wishes. Note: take 1h for your wish to register inside Mihoyo")
 async def update_wish_history(ctx, url = None):
     member: GenshinMember = data.getMember(ctx.author.id)
+    await ctx.defer()
     if member.url is None and url is None:
         embed = discord.Embed(title="You never provided a url !", description="Run the command /update_wish_history url (make sure you select the url attribut it should look like that: )")
         filePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "pics", "help_no_url_ever_provided.png")
@@ -30,7 +31,6 @@ async def update_wish_history(ctx, url = None):
         embed. set_image(url="attachment://help_no_url_ever_provided.png")
         await ctx.respond(file=file, embed=embed)
         return
-    await ctx.defer()
     try:
         if await member.updateWishList(url):
             embed = discord.Embed(title="Your genshin history was updated with new wishes !", description="May wish gods be in you favor")
