@@ -22,8 +22,8 @@ async def on_ready():
     
 @bot.slash_command(guild_ids=guildIds, description="Update your wishes. Note: take 1h for your wish to register inside Mihoyo")
 async def update_wish_history(ctx, url = None):
-    member: GenshinMember = data.getMember(ctx.author.id)
     await ctx.defer()
+    member: GenshinMember = data.getMember(ctx.author.id)
     if member.url is None and url is None:
         embed = discord.Embed(title="You never provided a url !", description="Run the command /update_wish_history url (make sure you select the url attribut it should look like that: )")
         filePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "pics", "help_no_url_ever_provided.png")
@@ -51,6 +51,7 @@ async def update_wish_history(ctx, url = None):
     
 @bot.slash_command(guild_ids=guildIds, description="Show your 5 and 4 stars pity for each banner")
 async def show_pity(ctx):
+    await ctx.defer()
     if not await doesMemberExist(ctx):
         return
     member: GenshinMember = data.getMember(ctx.author.id)
@@ -80,10 +81,10 @@ def getBannerPityString(fourStarPity, fiveStarPity, maxPity, softPity):
 
 @bot.slash_command(guild_ids=guildIds, description="Generate your complete wish history and send it in DM")
 async def generate_wish_excel(ctx):
+    await ctx.defer()
     if not await doesMemberExist(ctx):
         return
     member: GenshinMember = data.getMember(ctx.author.id)
-    await ctx.defer()
     member.generateExcel()    
     filePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "excel", "{}.xlsx".format(member.id))
     await ctx.author.send("Here is your wish history ! If you did not run the command /update_wish_history, the excel will be generated with the last time you ran that command.", file=discord.File(filePath))
@@ -96,6 +97,7 @@ async def generate_wish_excel(ctx):
         
 @bot.slash_command(guild_ids=guildIds, description="Delete all your data from the server.")
 async def delete_my_data(ctx):
+    await ctx.defer()
     filePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "members", "{}.pickle".format(ctx.author.id))
     if os.path.exists(filePath):
         os.remove(filePath)
@@ -107,6 +109,7 @@ async def delete_my_data(ctx):
     
 @bot.slash_command(guild_ids=guildIds, description="Get help")
 async def help(ctx):
+    await ctx.defer()
     embed = discord.Embed(title="Help center")
     description = Message()
     description.addLine("Run the command /update_wish_history url(optional if you already did the command and the link is still valid)")
