@@ -128,7 +128,7 @@ async def help(ctx):
     description.addLine("Run the command /delete_my_data ")
     embed.add_field(name="Delete all your data from the bot", value=description.getString(), inline=False)
     
-    embed.set_footer(text="If you have any questions, feel free ro reach out to me on my discord: champymarty#0902")
+    embed.set_footer(text="If you have any questions, join the Discord help server ! https://discord.com/invite/hRTHpB4HUC")
     await ctx.respond(embed=embed)
 
 async def doesMemberExist(ctx) -> bool:
