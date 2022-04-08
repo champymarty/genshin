@@ -37,7 +37,7 @@ def _read_logfile(logfile: Optional[str] = None) -> str:
         return file.read()
 
 def extract_url() -> Optional[str]:
-    matchList = re.findall("^OnGetWebViewPageFinish:https://webstatic\-sea.mihoyo\.com.*log$", _read_logfile(get_logfile()), re.MULTILINE)
+    matchList = re.findall("^OnGetWebViewPageFinish:https://webstatic-sea.*log$", _read_logfile(get_logfile()), re.MULTILINE)
     if len(matchList) == 0:
         return None
     else:
