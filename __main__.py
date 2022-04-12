@@ -1,7 +1,10 @@
 from pydoc import describe
+from DataExpire import DataExpire
 from GenshinMember import GenshinMember, Banner
 import discord
 import os
+import logging
+
 from dotenv import load_dotenv
 from MarkdownDiscord import Effect, Message
 from data import Data
@@ -14,11 +17,32 @@ bot = discord.Bot()
 data = Data()
 
 guildIds = [833210288681517126] # test discord server
-guildIds = None # force global commandsa
+# guildIds = None # force global commandsa
+
+dataExpireChecker = DataExpire()
+
+loggerStart = logging.getLogger("genshin bot start")
+loggerStart.setLevel(logging.INFO)
+file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "server_count.log")
+handler = logging.FileHandler(filename=file, encoding="utf-8", mode="w")
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s: %(message)s'))
+loggerStart.addHandler(handler)
+
+@bot.event
+async def on_guild_join(guild: discord.Guild):
+    loggerStart.log(logging.INFO, "Bot just joined {}. The bot is now in {} guilds.".format(guild.name, len(bot.guilds)))
+
+@bot.event
+async def on_guild_remove(guild: discord.Guild):
+    loggerStart.log(logging.INFO, "Bot just left {}. The bot is now in {} guilds.".format(guild.name, len(bot.guilds)))
+    server = data.getServer(guild.id)
+    data.servers.remove(server)
+    data.saveData()
 
 @bot.event
 async def on_ready():
-    print("We have logged in as {0.user}".format(bot))
+    loggerStart.log(logging.INFO, "We have logged in as {0.user}".format(bot))
+    loggerStart.log(logging.INFO, "Bot in {} guilds.".format(len(bot.guilds)))
     
 @bot.slash_command(guild_ids=guildIds, description="Update your wishes. Note: take 1h for your wish to register inside Mihoyo")
 async def update_wish_history(ctx, url = None):
