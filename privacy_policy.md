@@ -18,12 +18,13 @@ No other information outside of the above mentioned one will be stored.
 Your information are stored in the server and will never be share with anyone. These information are only use to make the bot work and authentificate you.
 
 ## Updating Data 
-The data may be updated when using specific commands.
+Your data may be updated when using specific commands.
 Updating data will require the input of an end user.
 
 No other actions may update the stored information at any given time.
 ## Removal of Data
-The data may be removed by using the command /delete_my_data.
+Your data may be removed by using the command /delete_my_data.
+Your data will be deleted after 30 days to comply with discord policies.
 If the bot is down for any reasons, you can also contact me in the [official Support Discord of the Bot](https://discord.com/invite/hRTHpB4HUC) to get your data remove.
 
 ## Contact
