@@ -15,7 +15,7 @@ class DataExpire(commands.Cog):
         self.checkForExpireData.cancel()
 
 
-    @tasks.loop(seconds=30)
+    @tasks.loop(seconds=60*60)
     async def checkForExpireData(self):
         filesDataPath = []
         for file in listdir(self.dataPath):

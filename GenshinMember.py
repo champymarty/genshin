@@ -1,6 +1,6 @@
+import logging
 import os
 import pickle
-import traceback
 import genshin
 from dotenv import load_dotenv
 import xlsxwriter
@@ -13,6 +13,13 @@ class Banner(Enum):
     NOVICE = 4
 
 class GenshinMember:
+    loggerError = logging.getLogger("errors")
+    loggerError.setLevel(logging.ERROR)
+    file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "errors.log")
+    handler = logging.FileHandler(filename=file, encoding="utf-8", mode="w")
+    handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s: %(message)s'))
+    loggerError.addHandler(handler)
+    
     def __init__(self, id):
         self.id = id
         self.permanent_banner = []
@@ -27,12 +34,15 @@ class GenshinMember:
     
     async def updateWishList(self, url):
         load_dotenv()
+        client = genshin.MultiCookieClient()
+        client.set_cookies([
+                        {"ltuid": os.getenv("ltuid"), "ltoken": os.getenv("ltoken")}, 
+                        {"ltuid": os.getenv("ltuid2"), "ltoken": os.getenv("ltoken2")}
+                        ])
         change = False
         if url is not None:
             change = True
 
-        cookies = {"ltuid": os.getenv("ltuid"), "ltoken": os.getenv("ltoken")}
-        client = genshin.GenshinClient(cookies)
         try:
             if url is None:
                 authkey = genshin.extract_authkey(self.url)
@@ -44,9 +54,11 @@ class GenshinMember:
             result2 = await self._updateBanner(self.permanent_banner, 200, client)
             result3 = await self._updateBanner(self.character_banner, 301, client)
             result4 = await self._updateBanner(self.weapon_banner, 302, client)
+        except genshin.AuthkeyException as e:
+            raise e
         except Exception as e:
-            print(e)
-            traceback.format_exc()
+            if not isinstance(e, genshin.AuthkeyException) and client.authkey is not None:
+                GenshinMember.loggerError.log(logging.ERROR, e)
             raise e
         finally:
             await client.close()
@@ -57,7 +69,7 @@ class GenshinMember:
             self.saveData()
         return newWish
         
-    async def _updateBanner(self, banner_list, banner_number, client):
+    async def _updateBanner(self, banner_list, banner_number, client: genshin.MultiCookieClient):
         before_size = len(banner_list)
         async for wish in client.wish_history(banner_number):
             if before_size == 0:

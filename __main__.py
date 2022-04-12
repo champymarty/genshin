@@ -1,4 +1,3 @@
-from pydoc import describe
 from DataExpire import DataExpire
 from GenshinMember import GenshinMember, Banner
 import discord
@@ -41,6 +40,7 @@ async def on_guild_remove(guild: discord.Guild):
 
 @bot.event
 async def on_ready():
+    print("We have logged in as {0.user}".format(bot))
     loggerStart.log(logging.INFO, "We have logged in as {0.user}".format(bot))
     loggerStart.log(logging.INFO, "Bot in {} guilds.".format(len(bot.guilds)))
     
@@ -52,7 +52,7 @@ async def update_wish_history(ctx, url = None):
         embed = discord.Embed(title="You never provided a url !", description="Run the command /update_wish_history url (make sure you select the url attribut it should look like that: )")
         filePath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "pics", "help_no_url_ever_provided.png")
         file = discord.File(filePath, filename="help_no_url_ever_provided.png")
-        embed. set_image(url="attachment://help_no_url_ever_provided.png")
+        embed.set_image(url="attachment://help_no_url_ever_provided.png")
         await ctx.respond(file=file, embed=embed)
         return
     try:
