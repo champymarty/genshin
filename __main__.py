@@ -1,8 +1,11 @@
 from DataExpire import DataExpire
+from FiveStarStats import FiveStarsStats
 from GenshinMember import GenshinMember, Banner
 import discord
 import os
 import logging
+from constant import guildIds
+from Util import doesMemberExist
 
 from dotenv import load_dotenv
 from MarkdownDiscord import Effect, Message
@@ -12,13 +15,11 @@ from data import Data
 # load .env variables
 load_dotenv()
 
-bot = discord.Bot()
+bot: discord.ext.commands.Bot = discord.ext.commands.Bot()
 data = Data()
 
-guildIds = [833210288681517126] # test discord server
-guildIds = None # force global commandsa
-
 dataExpireChecker = DataExpire()
+bot.add_cog(FiveStarsStats(bot, data))
 
 loggerStart = logging.getLogger("genshin bot start")
 loggerStart.setLevel(logging.INFO)
@@ -154,14 +155,5 @@ async def help(ctx):
     
     embed.set_footer(text="If you have any questions, join the Discord help server ! https://discord.com/invite/hRTHpB4HUC")
     await ctx.respond(embed=embed)
-
-async def doesMemberExist(ctx) -> bool:
-    filePathMember = os.path.join(os.path.dirname(os.path.realpath(__file__)), "members", "{}.pickle".format(ctx.author.id))
-    if not os.path.isfile(filePathMember):
-        embed = discord.Embed(title="Oups ! You dont have any data store on the server", description="Please run the command /update_wish_history url")
-        embed.set_image(url="https://c.tenor.com/lceyY93l6_YAAAAC/mihoyo-genshin.gif")
-        await ctx.respond(embed=embed)
-        return False
-    return True
 
 bot.run(os.getenv("TOKEN"))
