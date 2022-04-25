@@ -1,5 +1,4 @@
 import asyncio
-from numpy import true_divide
 from GenshinMember import GenshinMember
 from constant import guildIds
 import discord
